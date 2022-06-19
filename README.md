@@ -1,5 +1,5 @@
 # TD3
-time series analysis data accompanied by code (outcome: generalized trifecta outcome after robotic vs. open partial nephrectomy)
+time series analysis data accompanied by code (generalized trifecta outcome after robotic vs. open partial nephrectomy)
 
 R code is included for the implementation of fixed and random effects models in the context of a meta-regression analysis (moderator: year of publication)
 
