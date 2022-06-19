@@ -1,0 +1,12 @@
+label;study;year;center;matching;stars;definition;evexp;nonevexp;nexp;evctrl;nonevctrl;nctrl
+1410;Bianchi et al 2020;2020;Single-center Studies;Studies without patient matching;7;IT < 25min as measure of postoperative renal function;58;25;83;119;124;243
+1405;Bindayi et al 2019;2019;Multicenter Studies;Studies without patient matching;8;ÄeGFR < 10% as measure of postoperative renal function;64;88;152;125;200;325
+1026;Chang et al 2018;2018;Multicenter Studies;Studies with patient matching;8;IT < 25min as measure of postoperative renal function;75;47;122;79;43;122
+1040;Ghali et al 2019;2019;Single-center Studies;Studies without patient matching;6;ÄeGFR < 10% as measure of postoperative renal function;28;31;59;31;60;91
+1400;Ghavimi et al 2020;2020;Multicenter Studies;Studies without patient matching;7;ÄeGFR < 10% as measure of postoperative renal function;133;151;284;395;351;746
+1051;Harke et al 2018;2018;Multicenter Studies;Studies without patient matching;7;IT < 25min as measure of postoperative renal function;48;16;64;52;24;76
+1084;Mehra et al 2019;2019;Single-center Studies;Studies with patient matching;6;IT < 25min as measure of postoperative renal function;8;5;13;19;7;26
+1091;Motoyama et al 2019;2019;Single-center Studies;Studies with patient matching;6;IT < 25min as measure of postoperative renal function;34;3;37;23;14;37
+1113;Porpiglia et al 2016;2016;Multicenter Studies;Studies without patient matching;9;IT < 25min as measure of postoperative renal function;66;29;95;83;50;133
+1131;Soisrithong et al 2021;2021;Single-center Studies;Studies without patient matching;7;ÄeGFR < 10% as measure of postoperative renal function;39;31;70;18;24;42
+1031;Yerram et al 2018;2018;Single-center Studies;Studies with patient matching;7;ÄeGFR < 10% as measure of postoperative renal function;10;58;68;7;35;42
