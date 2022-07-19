@@ -8,8 +8,11 @@ trifecta <-trifecta[c(1:11),]
 ############# FIXED EFFECTS MODEL ###########
 
 # Pooled Analysis
+peto_fe<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.random = FALSE)
+forest_peto_fe<-forest(peto_fe, xlim = c(0.1,20))
 
-# Meta Regression Analysis (Pooled)
+
+# Meta Regression Analysis (Pooled Data)
 metareg_peto_fe<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta, append = TRUE)
 metareg_peto_fema<-rma(yi, vi, data = metareg_peto_fe, method = "FE", mods = ~year)
 metareg_peto_fema
@@ -24,7 +27,10 @@ lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
 
 
-# Subgroup Analysis
+# Subgroup Analysis (Studies with / without patient matching)
+peto_fe_match<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.random = FALSE, byvar = matching, print.byvar = FALSE)
+forest_peto_fe_match<-forest(peto_fe_match, xlim = c(0.1,20),test.subgroup = FALSE)
+
 
 # Meta Regression Analysis (Studies with patient matching)
 metareg_peto_fe<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta [trifecta$matching=="Studies with patient matching",], append = TRUE)
@@ -56,19 +62,9 @@ lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
 
 
-# Meta Regression Analysis (Multicenter Studies)
-metareg_peto_fe<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta [trifecta$center=="Multicenter Studies",], append = TRUE)
-metareg_peto_fema<-rma(yi, vi, data = metareg_peto_fe, method = "FE", mods = ~year)
-metareg_peto_fema
-yearvec<-seq(min(trifecta$year), max(trifecta$year), 1)
-preds<-predict(metareg_peto_fema, newmods = yearvec)
-wi<-1/sqrt(metareg_peto_fe$vi+metareg_peto_fema$tau2)
-size<-1+2*(wi - min(wi)) / (max(wi) - min(wi))
-plot(metareg_peto_fe$year, metareg_peto_fe$yi, pch = 1, cex = size, xlim = c(2015, 2022), ylim = c(-3, 3), ylab = "log[Peto Odds Ratio] (Experimental: RAPN vs Control: OPN)", xlab = "Year")
-lines(yearvec, preds$pred, lwd = 2, col = "blue")
-lines(yearvec, preds$ci.lb, lty = "dashed")
-lines(yearvec, preds$ci.ub, lty = "dashed")
-abline(h=0, lwd = 2, lty = "dotted")
+# Subgroup Analysis (Single- / Multicenter Studies)
+peto_fe_center<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.random = FALSE, byvar = center, print.byvar = FALSE)
+forest_peto_fe_center<-forest(peto_fe_center, xlim = c(0.1,20),test.subgroup = FALSE)
 
 
 # Meta Regression Analysis (Single-center Studies)
@@ -84,6 +80,26 @@ lines(yearvec, preds$pred, lwd = 2, col = "lightblue")
 lines(yearvec, preds$ci.lb, lty = "dashed")
 lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
+
+
+# Meta Regression Analysis (Multicenter Studies)
+metareg_peto_fe<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta [trifecta$center=="Multicenter Studies",], append = TRUE)
+metareg_peto_fema<-rma(yi, vi, data = metareg_peto_fe, method = "FE", mods = ~year)
+metareg_peto_fema
+yearvec<-seq(min(trifecta$year), max(trifecta$year), 1)
+preds<-predict(metareg_peto_fema, newmods = yearvec)
+wi<-1/sqrt(metareg_peto_fe$vi+metareg_peto_fema$tau2)
+size<-1+2*(wi - min(wi)) / (max(wi) - min(wi))
+plot(metareg_peto_fe$year, metareg_peto_fe$yi, pch = 1, cex = size, xlim = c(2015, 2022), ylim = c(-3, 3), ylab = "log[Peto Odds Ratio] (Experimental: RAPN vs Control: OPN)", xlab = "Year")
+lines(yearvec, preds$pred, lwd = 2, col = "blue")
+lines(yearvec, preds$ci.lb, lty = "dashed")
+lines(yearvec, preds$ci.ub, lty = "dashed")
+abline(h=0, lwd = 2, lty = "dotted")
+
+
+# Subgroup Analysis (ΔeGFR < 10% / IT < 25min as measure of postoperative renal function)
+peto_fe_definition<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.random = FALSE, byvar = definition, print.byvar = FALSE)
+forest_peto_fe_definition<-forest(peto_fe_definition, xlim = c(0.1,20),test.subgroup = FALSE)
 
 
 # Meta Regression Analysis (ΔeGFR < 10% as measure of postoperative renal function)
@@ -116,12 +132,15 @@ lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
 
 
-
 ############# RANDOM EFFECTS MODEL ###########
 
-# Pooled Analysis
 
-# Meta Regression Analysis (Pooled)
+# Pooled Analysis
+peto_re<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.fixed = FALSE)
+forest_peto_re<-forest(peto_re, xlim = c(0.1,20))
+
+
+# Meta Regression Analysis (Pooled Data)
 metareg_peto_re<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta, append = TRUE)
 metareg_peto_rema<-rma(yi, vi, data = metareg_peto_re, method = "REML", mods = ~year)
 metareg_peto_rema
@@ -136,7 +155,10 @@ lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
 
 
-# Subgroup Analysis
+# Subgroup Analysis (Studies with / without patient matching)
+peto_re_match<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.fixed = FALSE, byvar = matching, print.byvar = FALSE)
+forest_peto_re_match<-forest(peto_re_match, xlim = c(0.05,20),test.subgroup = FALSE)
+
 
 # Meta Regression Analysis (Studies with patient matching)
 metareg_peto_re<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta [trifecta$matching=="Studies with patient matching",], append = TRUE)
@@ -168,19 +190,9 @@ lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
 
 
-# Meta Regression Analysis (Multicenter Studies)
-metareg_peto_re<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta [trifecta$center=="Multicenter Studies",], append = TRUE)
-metareg_peto_rema<-rma(yi, vi, data = metareg_peto_re, method = "REML", mods = ~year)
-metareg_peto_rema
-yearvec<-seq(min(trifecta$year), max(trifecta$year), 1)
-preds<-predict(metareg_peto_rema, newmods = yearvec)
-wi<-1/sqrt(metareg_peto_re$vi+metareg_peto_rema$tau2)
-size<-1+2*(wi - min(wi)) / (max(wi) - min(wi))
-plot(metareg_peto_re$year, metareg_peto_re$yi, pch = 1, cex = size, xlim = c(2015, 2022), ylim = c(-3, 3), ylab = "log[Peto Odds Ratio] (Experimental: RAPN vs Control: OPN)", xlab = "Year")
-lines(yearvec, preds$pred, lwd = 2, col = "blue")
-lines(yearvec, preds$ci.lb, lty = "dashed")
-lines(yearvec, preds$ci.ub, lty = "dashed")
-abline(h=0, lwd = 2, lty = "dotted")
+# Subgroup Analysis (Single- / Multicenter Studies)
+peto_re_center<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.fixed = FALSE, byvar = center, print.byvar = FALSE)
+forest_peto_re_center<-forest(peto_re_center, xlim = c(0.1,20),test.subgroup = FALSE)
 
 
 # Meta Regression Analysis (Single-center Studies)
@@ -196,6 +208,26 @@ lines(yearvec, preds$pred, lwd = 2, col = "lightblue")
 lines(yearvec, preds$ci.lb, lty = "dashed")
 lines(yearvec, preds$ci.ub, lty = "dashed")
 abline(h=0, lwd = 2, lty = "dotted")
+
+
+# Meta Regression Analysis (Multicenter Studies)
+metareg_peto_re<-escalc(measure = "OR",ai = evexp, bi = nonevexp, ci = evctrl, di = nonevctrl, data = trifecta [trifecta$center=="Multicenter Studies",], append = TRUE)
+metareg_peto_rema<-rma(yi, vi, data = metareg_peto_re, method = "REML", mods = ~year)
+metareg_peto_rema
+yearvec<-seq(min(trifecta$year), max(trifecta$year), 1)
+preds<-predict(metareg_peto_rema, newmods = yearvec)
+wi<-1/sqrt(metareg_peto_re$vi+metareg_peto_rema$tau2)
+size<-1+2*(wi - min(wi)) / (max(wi) - min(wi))
+plot(metareg_peto_re$year, metareg_peto_re$yi, pch = 1, cex = size, xlim = c(2015, 2022), ylim = c(-3, 3), ylab = "log[Peto Odds Ratio] (Experimental: RAPN vs Control: OPN)", xlab = "Year")
+lines(yearvec, preds$pred, lwd = 2, col = "blue")
+lines(yearvec, preds$ci.lb, lty = "dashed")
+lines(yearvec, preds$ci.ub, lty = "dashed")
+abline(h=0, lwd = 2, lty = "dotted")
+
+
+# Subgroup Analysis (ΔeGFR < 10% / IT < 25min as measure of postoperative renal function)
+peto_re_definition<-metabin(evexp,nexp,evctrl,nctrl,sm="OR",method = "peto",data = trifecta,studlab=study,comb.fixed = FALSE, byvar = definition, print.byvar = FALSE)
+forest_peto_re_definition<-forest(peto_re_definition, xlim = c(0.1,20),test.subgroup = FALSE)
 
 
 # Meta Regression Analysis (ΔeGFR < 10% as measure of postoperative renal function)
